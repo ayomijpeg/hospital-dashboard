@@ -1,0 +1,47 @@
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "./generated"
+}
+
+model Doctor {
+  id         Int        @id @default(autoincrement())
+  name       String
+  email      String     @unique
+  department String
+  password   String
+  schedules  Schedule[] // ← Add this relation field
+  createdAt  DateTime   @default(now())
+}
+
+model Schedule {
+  id        Int      @id @default(autoincrement())
+  date      DateTime
+  startTime String
+  endTime   String
+  status    String   @default("Available")
+  doctor    Doctor   @relation(fields: [doctorId], references: [id])
+  doctorId  Int
+}
+
+model Patient {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  age       Int
+  condition String?
+  createdAt DateTime @default(now())
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  password  String
+  role      String   @default("user")
+  createdAt DateTime @default(now())
+}
