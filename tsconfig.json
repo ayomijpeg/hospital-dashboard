@@ -11,10 +11,15 @@
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
+<<<<<<< HEAD
     "typeRoots": ["./node_modules/@types", "./types"],
     "jsx": "preserve",
     "incremental": true,
     "forceConsistentCasingInFileNames": true,
+=======
+    "jsx": "preserve",
+    "incremental": true,
+>>>>>>> ecdf981a7d2f216d58212e2c9b174f114021b032
     "plugins": [
       {
         "name": "next"
@@ -22,6 +27,7 @@
     ],
     "paths": {
       "@/*": ["./src/*"]
+<<<<<<< HEAD
     },
     "baseUrl": "."
   },
@@ -34,3 +40,10 @@
   ],
   "exclude": ["node_modules"]
 }
+=======
+    }
+  },
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "exclude": ["node_modules"]
+}
+>>>>>>> ecdf981a7d2f216d58212e2c9b174f114021b032
