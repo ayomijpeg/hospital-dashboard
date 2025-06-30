@@ -182,7 +182,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "C:\\VM\\hobby\\hospital-dashboard\\prisma\\generated",
+      "value": "/Users/macbook/Documents/GitHub/hospital-dashboard/prisma/generated",
       "fromEnvVar": null
     },
     "config": {
@@ -191,12 +191,12 @@ const config = {
     "binaryTargets": [
       {
         "fromEnvVar": null,
-        "value": "windows",
+        "value": "darwin",
         "native": true
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "C:\\VM\\hobby\\hospital-dashboard\\prisma\\schema.prisma",
+    "sourceFilePath": "/Users/macbook/Documents/GitHub/hospital-dashboard/prisma/schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
@@ -210,7 +210,7 @@ const config = {
     "db"
   ],
   "activeProvider": "mysql",
-  "postinstall": false,
+  "postinstall": true,
   "inlineDatasources": {
     "db": {
       "url": {

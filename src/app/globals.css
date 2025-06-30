@@ -14,11 +14,7 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-<<<<<<< HEAD
-    --background: #eaedf0 ;
-=======
-    --background: #0a0a0a;
->>>>>>> ecdf981a7d2f216d58212e2c9b174f114021b032
+    --background: #eaedf0;
     --foreground: #ededed;
   }
 }
@@ -28,8 +24,6 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
-<<<<<<< HEAD
-
 
 @layer utilities {
   @keyframes fadeIn {
@@ -47,16 +41,14 @@ body {
     animation: fadeIn 0.3s ease-out forwards;
   }
   /* Custom scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #0d9488;
+    border-radius: 4px;
+  }
 }
-::-webkit-scrollbar-track {
-  background: #f1f1f1;
-}
-::-webkit-scrollbar-thumb {
-  background: #0d9488;
-  border-radius: 4px;
-}
-}
-=======
->>>>>>> ecdf981a7d2f216d58212e2c9b174f114021b032
