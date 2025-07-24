@@ -1,47 +1,91 @@
-datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL")
-}
 generator client {
   provider = "prisma-client-js"
-  output   = "./generated"
 }
 
-
-model Doctor {
-  id         Int        @id @default(autoincrement())
-  name       String
-  email      String     @unique
-  department String
-  password   String
-  schedules  Schedule[] // ← Add this relation field
-  createdAt  DateTime   @default(now())
+datasource db {
+  provider     = "postgresql"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
 }
 
-model Schedule {
-  id        Int      @id @default(autoincrement())
-  date      DateTime
-  startTime String
-  endTime   String
-  status    String   @default("Available")
-  doctor    Doctor   @relation(fields: [doctorId], references: [id])
-  doctorId  Int
-}
-
-model Patient {
-  id        Int      @id @default(autoincrement())
-  name      String
-  email     String   @unique
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model appointment {
+  id        String   @id @db.VarChar(191)
+  name      String   @db.VarChar(191)
+  gender    String   @db.VarChar(191)
   age       Int
-  condition String?
+  dateTime  DateTime
+  status    String   @default("Pending") @db.VarChar(191)
+  doctorId  Int
+  avatar    String?  @db.VarChar(191)
   createdAt DateTime @default(now())
+  patientId Int?
+  doctor    doctor   @relation(fields: [doctorId], references: [id])
+  patient   patient? @relation(fields: [patientId], references: [id])
+
+  @@index([doctorId], map: "Appointment_doctorId_idx")
+  @@index([patientId], map: "Appointment_patientId_idx")
 }
 
-model User {
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model bill {
+  id        Int       @id @default(autoincrement())
+  patientId Int
+  doctorId  Int
+  services  String    @db.VarChar(191)
+  amount    Float
+  status    String    @default("Unpaid") @db.VarChar(191)
+  issuedAt  DateTime  @default(now())
+  paidAt    DateTime?
+
+  @@index([doctorId], map: "Bill_doctorId_idx")
+  @@index([patientId], map: "Bill_patientId_idx")
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model doctor {
+  id           Int           @id @default(autoincrement())
+  name         String        @db.VarChar(191)
+  email        String        @unique @db.VarChar(191)
+  department   String        @db.VarChar(191)
+  password     String        @db.VarChar(191)
+  gender       String        @db.VarChar(191)
+  avatar       String?       @db.VarChar(191)
+  status       String        @default("Available") @db.VarChar(191)
+  createdAt    DateTime      @default(now())
+  appointments appointment[]
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model patient {
   id        Int      @id @default(autoincrement())
-  name      String
-  email     String   @unique
-  password  String
-  role      String   @default("user")
+  name      String   @db.VarChar(191)
+  email     String   @unique @db.VarChar(191)
+  age       Int
+  condition String?  @db.VarChar(191)
+  avatar    String?  @db.VarChar(191)
+  createdAt DateTime @default(now())
+  appointments appointment[]
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model schedule {
+  id        Int      @id @default(autoincrement())
+  title     String   @db.VarChar(191)
+  startTime DateTime
+  endTime   DateTime
+  doctorId  Int
+  createdAt DateTime @default(now())
+
+  @@index([doctorId], map: "Schedule_doctorId_idx")
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model user {
+  id        Int      @id @default(autoincrement())
+  name      String   @db.VarChar(191)
+  email     String   @unique @db.VarChar(191)
+  password  String   @db.VarChar(191)
+  role      String   @default("user") @db.VarChar(191)
   createdAt DateTime @default(now())
 }

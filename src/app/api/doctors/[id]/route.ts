@@ -1,32 +1,66 @@
 // src/app/api/doctors/[id]/route.ts
 import { prisma } from '@/libs/prisma'
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
+import type { AppRouteHandlerFnContext } from 'next/dist/shared/lib/app-router-context'
 
+// GET /api/doctors/[id]
 export async function GET(
-  _: Request,
-  { params }: { params: { id: string } }
+  req: NextRequest,
+  context: AppRouteHandlerFnContext
 ) {
-  const doctor = await prisma.doctor.findMany({ where: { id: params.id } })
-  if (!doctor) return NextResponse.json({ error: 'Not found' }, { status: 404 })
-  return NextResponse.json(doctor)
+  const { id } = context.params as { id: string }
+
+  try {
+    const doctor = await prisma.doctor.findUnique({
+      where: { id: Number(id) },
+    })
+
+    if (!doctor) {
+      return NextResponse.json({ error: 'Doctor not found' }, { status: 404 })
+    }
+
+    return NextResponse.json(doctor)
+  } catch (error) {
+    console.error('Failed to fetch doctor:', error)
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+  }
 }
 
+// PUT /api/doctors/[id]
 export async function PUT(
-  req: Request,
-  { params }: { params: { id: string } }
+  req: NextRequest,
+  context: AppRouteHandlerFnContext
 ) {
-  const data = await req.json()
-  const updated = await prisma.doctorId.update({
-    where: { id: params.id },
-    data,
-  })
-  return NextResponse.json(updated)
+  const { id } = context.params as { id: string }
+
+  try {
+    const updatedDoctor = await prisma.doctor.update({
+      where: { id: Number(id) },
+      data: await req.json(),
+    })
+
+    return NextResponse.json(updatedDoctor)
+  } catch (error) {
+    console.error('Failed to update doctor:', error)
+    return NextResponse.json({ error: 'Update failed' }, { status: 500 })
+  }
 }
 
+// DELETE /api/doctors/[id]
 export async function DELETE(
-  _: Request,
-  { params }: { params: { id: string } }
+  req: NextRequest,
+  context: AppRouteHandlerFnContext
 ) {
-  await prisma.doctorId.delete({ where: { id: params.id } })
-  return NextResponse.json({ success: true })
+  const { id } = context.params as { id: string }
+
+  try {
+    await prisma.doctor.delete({
+      where: { id: Number(id) },
+    })
+
+    return NextResponse.json({ message: 'Doctor deleted' })
+  } catch (error) {
+    console.error('Failed to delete doctor:', error)
+    return NextResponse.json({ error: 'Delete failed' }, { status: 500 })
+  }
 }

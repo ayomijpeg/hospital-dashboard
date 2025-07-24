@@ -1,17 +1,19 @@
 "use client";
+
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
+import dynamic from "next/dynamic";
 import Image from "next/image";
 import { toast } from "react-hot-toast";
-import { Eye, EyeOff } from "lucide-react";
+
+// Dynamic imports to reduce JS bundle size
+const Eye = dynamic(() => import("lucide-react").then((mod) => mod.Eye), { ssr: false });
+const EyeOff = dynamic(() => import("lucide-react").then((mod) => mod.EyeOff), { ssr: false });
 
 export default function LoginForm() {
   const router = useRouter();
-  const [form, setForm] = useState({
-    email: "",
-    password: "",
-  });
+  const [form, setForm] = useState({ email: "", password: "" });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -20,95 +22,44 @@ export default function LoginForm() {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  // const handleSubmit = async (e: React.FormEvent) => {
-  //   e.preventDefault();
-  //   setError("");
-  //   setLoading(true);
-
-  //   try {
-  //     const res = await fetch("/api/auth/login", {
-  //       method: "POST",
-  //       headers: { "Content-Type": "application/json" },
-  //       body: JSON.stringify(form),
-  //     });
-
-  //     const data = await res.json();
-
-  //     if (!res.ok) {
-  //       throw new Error(data.error || "Login failed");
-  //     }
-
-  //     // Show success toast with callback
-  //     toast.success("Login successful! Redirecting...", {
-  //       duration: 1500,
-  //       position: "top-center",
-  //       icon: "✅",
-  //       ariaProps: {
-  //         role: "status",
-  //         "aria-live": "polite",
-  //       },
-  //     });
-
-  //     // Wait for toast to complete before redirecting
-  //     await new Promise((resolve) => setTimeout(resolve, 1500));
-
-  //     // Perform the redirect
-  //     router.push("/dashboard");
-  //     router.refresh();
-  //   } catch (err) {
-  //     setError(err instanceof Error ? err.message : "Login failed");
-  //     toast.error("Login failed. Please try again.", {
-  //       position: "top-center",
-  //     });
-  //     console.error("Login error:", err);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     setLoading(true);
 
-    const { email, password } = form;
-
     const res = await signIn("credentials", {
       redirect: false,
-      email,
-      password,
+      email: form.email,
+      password: form.password,
+      callbackUrl: "/dashboard", // Ensures redirect after login
     });
 
     if (res?.error) {
       setError("Invalid email or password");
-      toast.error("Login failed. Please try again.", {
-        position: "top-center",
-      });
+      toast.error("Login failed. Please try again.");
       setLoading(false);
       return;
     }
 
     toast.success("Login successful! Redirecting...", {
-      duration: 1500,
-      position: "top-center",
+      duration: 1000,
     });
 
-    await new Promise((resolve) => setTimeout(resolve, 1500));
     router.push("/dashboard");
-    router.refresh();
-    setLoading(false);
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
       <div className="bg-white p-6 rounded-xl shadow-md w-full max-w-md">
-        {/* Header */}
+        {/* Logo + Heading */}
         <div className="text-center mb-6">
-          <div className="mx-auto w-16 h-16 relative mb-3">
+          <div className="mx-auto mb-3">
             <Image
               src="/images/logo.png"
               alt="Hospital Logo"
-              fill
-              className="object-contain"
+              width={64}
+              height={64}
+              className="mx-auto object-contain"
               priority
             />
           </div>
@@ -135,7 +86,7 @@ export default function LoginForm() {
               onChange={handleChange}
               placeholder="your@email.com"
               required
-              className="w-full px-4 py-2 border border-gray-300 text-gray-600 rounded-lg focus:ring-2 focus:ring-teal-500"
+              className="w-full px-4 py-2 border border-gray-300 text-gray-700 rounded-lg focus:ring-2 focus:ring-teal-500"
             />
           </div>
 
@@ -151,18 +102,14 @@ export default function LoginForm() {
                 onChange={handleChange}
                 placeholder="••••••••"
                 required
-                className="w-full px-4 py-2 border border-gray-300 text-gray-600 rounded-lg focus:ring-2 focus:ring-teal-500 pr-10"
+                className="w-full px-4 py-2 border border-gray-300 text-gray-700 rounded-lg focus:ring-2 focus:ring-teal-500 pr-10"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2"
+                className="absolute right-3 top-1/2 -translate-y-1/2"
               >
-                {showPassword ? (
-                  <EyeOff className="h-5 w-5 text-gray-400" />
-                ) : (
-                  <Eye className="h-5 w-5 text-gray-400" />
-                )}
+                {showPassword ? <EyeOff className="w-5 h-5 text-gray-400" /> : <Eye className="w-5 h-5 text-gray-400" />}
               </button>
             </div>
           </div>
@@ -189,12 +136,12 @@ export default function LoginForm() {
                     r="10"
                     stroke="currentColor"
                     strokeWidth="4"
-                  ></circle>
+                  />
                   <path
                     className="opacity-75"
                     fill="currentColor"
                     d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                  ></path>
+                  />
                 </svg>
                 Signing in...
               </span>
@@ -204,6 +151,7 @@ export default function LoginForm() {
           </button>
         </form>
 
+        {/* Footer */}
         <p className="text-center text-sm text-gray-500 mt-4">
           Don&apos;t have an account?{" "}
           <a href="/signup" className="text-teal-600 hover:underline">

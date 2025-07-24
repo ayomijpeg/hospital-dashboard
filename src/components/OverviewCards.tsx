@@ -1,5 +1,6 @@
 // src/components/OverviewCards.tsx
-
+ 'use client'
+import { useSession } from 'next-auth/react'
 import { FaCalendarAlt, FaUser, FaClinicMedical, FaVideo } from 'react-icons/fa'
 
 const cards = [
@@ -30,10 +31,12 @@ const cards = [
 ]
 
 export default function OverviewCards() {
+  const { data: session } = useSession()
+    
   return (
     <div className="px-6 py-4 bg-white rounded-lg shadow-sm">
       <div className="mb-6">
-        <h2 className="text-2xl font-semibold text-gray-800">Welcome, Dev. AYOMI</h2>
+        <h2 className="text-2xl font-semibold text-gray-800"> Welcome  {session?.user?.name || 'User'}</h2>
         <p className="text-sm text-gray-400">Have a nice day at great work</p>
       </div>
 

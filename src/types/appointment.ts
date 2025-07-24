@@ -1,12 +1,18 @@
 export type Gender = 'Male' | 'Female';
 
-export interface Appointment {
-  id: number;
-  name: string;
-  gender: Gender;
-  age: number;
-  date: string;
-  time: string;
-  status: 'Confirmed' | 'Pending' | 'Declined';
-  avatar: string;
+export type Appointment = {
+  id: string
+  name: string
+  gender: string
+  age: number
+  avatar?: string
+  dateTime: string
+  time: string
+  status: 'Pending' | 'Confirmed' | 'Declined'
+  doctor: {
+    name: string
+    department: string
+    avatar?: string
+  }
+  createdAt: string
 }

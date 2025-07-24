@@ -6,15 +6,17 @@ import { prisma } from '@/libs/prisma';
 
 export async function POST(req: Request) {
   try {
-    const { name, email, password, department } = await req.json();
+    const { name, email, password, department, gender } = await req.json();
 
+    
     // Validate input
-    if (!name || !email || !password || !department) {
+    if (!name || !email || !password || !department || !gender) {
       return NextResponse.json(
         { error: 'All fields are required' },
         { status: 400 }
       );
     }
+    const avatar = gender === 'Male' ? 'male-doctor.jpg' : 'female-doctor.jpg';
 
     if (!process.env.JWT_SECRET) {
       return NextResponse.json(
@@ -46,6 +48,8 @@ export async function POST(req: Request) {
         name, 
         email, 
         department,
+        gender,
+         avatar,
         password: hashedPassword 
       },
     });

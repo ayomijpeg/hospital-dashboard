@@ -1,6 +1,7 @@
 // src/app/api/doctors/route.ts
 import { NextResponse } from 'next/server';
-import { prisma } from '@/libs/prisma';
+import { prisma } from '@/libs/prisma'
+import bcrypt from 'bcryptjs';
 
 export async function GET() {
   try {
@@ -18,17 +19,22 @@ export async function GET() {
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { name, email, department } = body;
+    const { name, email, department , gender} = body;
 
-    if (!name || !email || !department) {
+    if (!name || !email || !department || !gender) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
+    const tempPassword = await bcrypt.hash('hospital123', 10)
+const avatar = gender === 'Male' ? 'male-doctor.jpg' : 'female-doctor.jpg'
 
     const newDoctor = await prisma.doctor.create({
       data: {
         name,
         email,
         department,
+         gender,
+    password: tempPassword,
+    avatar,
       },
     });
 

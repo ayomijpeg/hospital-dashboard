@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { FaCalendarAlt, FaUsers, FaClock, FaFileAlt, FaCog, FaThLarge } from 'react-icons/fa'
+import { FaCalendarAlt, FaUsers, FaClock, FaFileAlt, FaCog, FaThLarge,FaFileInvoiceDollar } from 'react-icons/fa'
 import Image from 'next/image'
 import LogoutButton from './LogoutButton'
 
@@ -12,6 +12,7 @@ const navItems = [
   { label: 'My Patients', icon: FaUsers, href: '/dashboard/patients' },
   { label: 'Schedule Timings', icon: FaClock, href: '/dashboard/Schedules' },
   { label: 'Blog', icon: FaFileAlt, href: '/dashboard/blog' },
+  { label: 'Billing', icon: FaFileInvoiceDollar, href: '/dashboard/billing' },
   { label: 'Settings', icon: FaCog, href: '/dashboard/settings' },
 ]
 

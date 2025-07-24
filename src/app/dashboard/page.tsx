@@ -32,8 +32,8 @@ export default async function DashboardPage() {
 
         {/* Grid Section: Appointments + Sidebar Analytics */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <AppointmentOverview />
           <UpcomingAppointments />
+          <AppointmentOverview />
           <PatientsAndGenderPanel />
         </div>
 

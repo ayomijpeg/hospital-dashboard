@@ -12,6 +12,7 @@ export default function SignupForm() {
     email: '', 
     department: '',
     password: '',
+      gender: '',
     confirmPassword: '' 
   });
   const [loading, setLoading] = useState(false);
@@ -22,9 +23,12 @@ export default function SignupForm() {
     confirm: false
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
+ const handleChange = (
+  e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+) => {
+  setForm({ ...form, [e.target.name]: e.target.value });
+};
+
 
   const togglePasswordVisibility = (field: 'password' | 'confirm') => {
     setShowPasswords(prev => ({ ...prev, [field]: !prev[field] }));
@@ -53,6 +57,7 @@ export default function SignupForm() {
         body: JSON.stringify({
           name: form.name,
           email: form.email,
+            gender: form.gender,
           department: form.department,
           password: form.password
         }),
@@ -159,6 +164,22 @@ export default function SignupForm() {
                   className="w-full px-4 py-2 border border-gray-300 text-gray-600 rounded-lg focus:ring-2 focus:ring-teal-500"
                 />
               </div>
+              <label htmlFor="gender" className="block text-sm font-medium text-gray-700 mb-1">
+  Gender
+</label>
+<select
+  id="gender"
+  name="gender"
+  value={form.gender}
+  onChange={handleChange}
+  required
+  className="w-full px-4 py-2 border border-gray-300 text-gray-600 rounded-lg focus:ring-2 focus:ring-teal-500"
+>
+  <option value="">Select Gender</option>
+  <option value="Male">Male</option>
+  <option value="Female">Female</option>
+</select>
+
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">

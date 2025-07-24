@@ -3,6 +3,7 @@ import { doctorSchedules } from '@/data/doctorSchedules';
 import { FaUserMd, FaClock } from 'react-icons/fa';
 import Calendar from 'react-calendar';
 import { useState } from 'react';
+// import AppointmentForm from '@/AppointmentForm';
 import 'react-calendar/dist/Calendar.css';
 
 type ValuePiece = Date | null;
@@ -20,6 +21,7 @@ export default function DoctorSchedules() {
 
   return (
     <div className="grid md:grid-cols-3 gap-6 bg-white rounded-xl p-6 shadow-md">
+      
       {/* Calendar Section */}
       <div className="md:col-span-1">
         <h3 className="text-lg font-semibold text-gray-800 mb-4">Choose Date</h3>
