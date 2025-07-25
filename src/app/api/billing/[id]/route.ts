@@ -1,14 +1,11 @@
-// Do NOT import from next/dist/... (this is unstable and unnecessary)
-
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/libs/prisma'
 
-// Correct and stable handler format
 export async function PATCH(
-  req: NextRequest,
-  { params }: { params: { id: string } }
+  request: NextRequest,
+  { params }: {params: Promise < { id: string } >} // Wrap in Promise
 ) {
-  const { id } = params
+  const { params: { id } } = await params; // Destructure after awaiting
 
   try {
     const updated = await prisma.bill.update({
