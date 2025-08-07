@@ -26,22 +26,29 @@ model appointment {
 
   @@index([doctorId], map: "Appointment_doctorId_idx")
   @@index([patientId], map: "Appointment_patientId_idx")
+  bills        bill[]
 }
 
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model bill {
-  id        Int       @id @default(autoincrement())
-  patientId Int
-  doctorId  Int
-  services  String    @db.VarChar(191)
-  amount    Float
-  status    String    @default("Unpaid") @db.VarChar(191)
-  issuedAt  DateTime  @default(now())
-  paidAt    DateTime?
+  id            Int          @id @default(autoincrement())
+  patientId     Int?
+  doctorId      Int
+  appointmentId String       @db.VarChar(191)
+  
 
-  @@index([doctorId], map: "Bill_doctorId_idx")
-  @@index([patientId], map: "Bill_patientId_idx")
+  services      String       @db.VarChar(191)
+  amount        Float
+  status        String       @default("Unpaid") @db.VarChar(191)
+  issuedAt      DateTime     @default(now())
+  paidAt        DateTime?
+
+  // ✅ Relations
+ patient       patient?     @relation(fields: [patientId], references: [id])
+  doctor        doctor       @relation(fields: [doctorId], references: [id])
+  appointment   appointment?  @relation(fields: [appointmentId], references: [id])
 }
+
 
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model doctor {
@@ -55,6 +62,7 @@ model doctor {
   status       String        @default("Available") @db.VarChar(191)
   createdAt    DateTime      @default(now())
   appointments appointment[]
+  bills        bill[]
 }
 
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
@@ -67,6 +75,7 @@ model patient {
   avatar    String?  @db.VarChar(191)
   createdAt DateTime @default(now())
   appointments appointment[]
+  bills        bill[]
 }
 
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.

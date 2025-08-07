@@ -5,7 +5,7 @@ export async function PATCH(
   request: NextRequest,
   { params }: {params: Promise < { id: string } >} // Wrap in Promise
 ) {
-  const { params: { id } } = await params; // Destructure after awaiting
+ const {id}= await params; // Destructure after awaiting
 
   try {
     const updated = await prisma.bill.update({
