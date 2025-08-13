@@ -55,7 +55,7 @@ export async function GET() {
         ? { id: bill.patient.id, name: bill.patient.name }
         : bill.patientId
         ? { id: bill.patientId, name: 'Patient not found' }
-        : { id: null, name: patientName };c d
+        : { id: null, name: patientName };
 
       const doctorInfo = bill.doctor
         ? { id: bill.doctor.id, name: bill.doctor.name }
