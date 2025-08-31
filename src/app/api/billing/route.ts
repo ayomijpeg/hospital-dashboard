@@ -1,25 +1,9 @@
-import { NextResponse } from 'next/server';
-import { prisma } from '@/libs/prisma';
-import { Prisma, bill as Bill } from '@prisma/client';
-
-type ExtendedBill = Bill & {
-  appointment?: {
-    id: string;
-    name: string;
-  } | null;
-  doctor?: {
-    id: number;
-    name: string;
-  } | null;
-  patient?: {
-    id: number;
-    name: string;
-  } | null;
-};
+import { NextResponse } from "next/server";
+import { prisma } from "@/libs/prisma";
 
 export async function GET() {
   try {
-    const bills: ExtendedBill[] = await prisma.bill.findMany({
+    const bills = await prisma.bill.findMany({
       include: {
         appointment: {
           select: {
@@ -41,25 +25,27 @@ export async function GET() {
         },
       },
       orderBy: {
-        issuedAt: 'desc',
+        issuedAt: "desc",
       },
     });
 
-    const processedBills = bills.map((bill) => {
+    const processedBills = bills.map((bill: any) => {
       const patientName =
-        bill.patient?.name ||
-        bill.appointment?.name ||
-        'Unknown Patient';
+        bill.patient?.name || bill.appointment?.name || "Unknown Patient";
 
       const patientInfo = bill.patient
         ? { id: bill.patient.id, name: bill.patient.name }
         : bill.patientId
+
         ? { id: bill.patientId, name: 'Patient not found' }
+
+        ? { id: bill.patientId, name: "Patient not found" }
+
         : { id: null, name: patientName };
 
       const doctorInfo = bill.doctor
         ? { id: bill.doctor.id, name: bill.doctor.name }
-        : { id: bill.doctorId, name: 'Unknown Doctor' };
+        : { id: bill.doctorId, name: "Unknown Doctor" };
 
       return {
         ...bill,
@@ -72,9 +58,9 @@ export async function GET() {
 
     return NextResponse.json(processedBills);
   } catch (error) {
-    console.error('[BILL_FETCH_ERROR]', error);
+    console.error("[BILL_FETCH_ERROR]", error);
     return NextResponse.json(
-      { error: 'Failed to fetch billing data' },
+      { error: "Failed to fetch billing data" },
       { status: 500 }
     );
   }
@@ -86,81 +72,43 @@ export async function POST(req: Request) {
 
     if (!appointmentId || !services || amount === undefined) {
       return NextResponse.json(
-        { error: 'Missing required fields' },
+        { error: "Missing required fields" },
         { status: 400 }
       );
     }
 
     const appointment = await prisma.appointment.findUnique({
-      where: { id: appointmentId },
-      include: {
-        patient: {
-          select: { name: true },
-        },
-      },
+      where: { id: String(appointmentId) }, // ensure type matches schema
     });
 
     if (!appointment) {
       return NextResponse.json(
-        { error: 'Appointment not found' },
+        { error: "Appointment not found" },
         { status: 404 }
       );
     }
 
-    let validPatientId: number | null = null;
-
-    if (appointment.patientId) {
-      const patientExists = await prisma.patient.count({
-        where: { id: appointment.patientId },
-      });
-
-      if (patientExists) {
-        validPatientId = appointment.patientId;
-      } else {
-        await prisma.appointment.update({
-          where: { id: appointmentId },
-          data: { patientId: null },
-        });
-      }
-    }
-
-const billData: Prisma.billUncheckedCreateInput = {
-  appointmentId: appointment.id,
-  doctorId: appointment.doctorId,
-  services,
-  amount: Number(amount),
-  status: 'Unpaid',
-  issuedAt: new Date(),
-  ...(validPatientId !== null && { patientId: validPatientId })
-};
-
-
-    const result = await prisma.$transaction([
-      prisma.bill.create({ data: billData }),
-      prisma.appointment.update({
-        where: { id: appointmentId },
-        data: { status: 'Completed' },
-      }),
-    ]);
-
-    return NextResponse.json(result[0], { status: 201 });
-  } catch (error) {
-    console.error('[BILL_CREATION_ERROR]', error);
-
-    if (error instanceof Prisma.PrismaClientKnownRequestError) {
-      if (error.code === 'P2003') {
-        return NextResponse.json(
-          {
-            error: 'Data integrity issue',
-            details: 'Please check appointment patient reference',
-          },
-          { status: 400 }
-        );
-      }
-    }
+    const bill = await prisma.bill.create({
+      data: {
+        appointmentId: appointment.id,
+        doctorId: appointment.doctorId,
+        services: String(services),
+        amount: Number(amount),
+        status: "Unpaid",
+        issuedAt: new Date(),
+        ...(appointment.patientId && { patientId: appointment.patientId }),
+      },
+    });
 
     return NextResponse.json(
-      { error: 'Failed to create bill' },
+      { message: "Bill created successfully", bill },
+      { status: 201 }
+    );
+  } catch (error) {
+    console.error("[BILL_CREATION_ERROR]", error);
+
+    return NextResponse.json(
+      { error: "Failed to create bill" },
       { status: 500 }
     );
   }
