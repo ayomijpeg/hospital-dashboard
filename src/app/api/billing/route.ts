@@ -36,11 +36,7 @@ export async function GET() {
       const patientInfo = bill.patient
         ? { id: bill.patient.id, name: bill.patient.name }
         : bill.patientId
-
-        ? { id: bill.patientId, name: 'Patient not found' }
-
         ? { id: bill.patientId, name: "Patient not found" }
-
         : { id: null, name: patientName };
 
       const doctorInfo = bill.doctor

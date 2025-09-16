@@ -1,14 +1,11 @@
 import "./globals.css";
-import { Inter } from "next/font/google";
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Toaster } from "react-hot-toast";
 import { Providers } from "@/app/provider";
 
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-inter",
-  display: "swap",
-});
+export const viewport: Viewport = {
+  themeColor: "#0d9488",
+};
 
 export const metadata: Metadata = {
   title: {
@@ -20,7 +17,6 @@ export const metadata: Metadata = {
     icon: "/favicon.ico",
     apple: "/apple-touch-icon.png",
   },
-  themeColor: "#0d9488",
 };
 
 export default function RootLayout({
@@ -29,11 +25,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html
-      lang="en"
-      className={`${inter.variable} scroll-smooth`}
-      suppressHydrationWarning
-    >
+    <html lang="en" className="scroll-smooth" suppressHydrationWarning>
       <body className="bg-[#f6f8fa] text-gray-800 antialiased">
         <Providers>
           {children}

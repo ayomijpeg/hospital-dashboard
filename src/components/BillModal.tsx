@@ -1,22 +1,24 @@
 // src/components/BillingPromptModal.tsx
-'use client'
+"use client";
 
-import { useEffect } from 'react'
+import { useEffect } from "react";
 
 type BillingPromptModalProps = {
-  appointmentId: string
-  onClose: () => void
-}
+  appointmentId: number;
+  onClose: () => void;
+};
 
-export default function BillingPromptModal({ appointmentId, onClose }: BillingPromptModalProps) {
-  
+export default function BillingPromptModal({
+  appointmentId,
+  onClose,
+}: BillingPromptModalProps) {
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose()
-    }
-    window.addEventListener('keydown', handleKeyDown)
-    return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [onClose])
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [onClose]);
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm">
@@ -29,9 +31,14 @@ export default function BillingPromptModal({ appointmentId, onClose }: BillingPr
           &times;
         </button>
 
-        <h2 className="text-lg font-semibold mb-4 text-gray-800">Create Bill for Appointment</h2>
+        <h2 className="text-lg font-semibold mb-4 text-gray-800">
+          Create Bill for Appointment
+        </h2>
 
-        <p className="text-sm text-gray-600 mb-4">You confirmed this appointment. Would you like to create a bill for this patient?</p>
+        <p className="text-sm text-gray-600 mb-4">
+          You confirmed this appointment. Would you like to create a bill for
+          this patient?
+        </p>
 
         <div className="flex justify-end gap-3 mt-4">
           <button
@@ -50,5 +57,5 @@ export default function BillingPromptModal({ appointmentId, onClose }: BillingPr
         </div>
       </div>
     </div>
-  )
+  );
 }

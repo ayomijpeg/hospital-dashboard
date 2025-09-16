@@ -1,74 +1,78 @@
-'use client'
+"use client";
 
-import { useEffect, useState } from 'react'
-import AppointmentForm from '@/components/AppointmentForm'
-import AppointmentCard from '@/components/AppointmentCard'
-import { Appointment } from '@/types/appointment'
-import { toast } from 'react-hot-toast' // You can also use shadcn/ui's toast if preferred
-import  BillingPromptModal  from '@/components/BillModal'
+import { useEffect, useState } from "react";
+import AppointmentForm from "@/components/AppointmentForm";
+import AppointmentCard from "@/components/AppointmentCard";
+import { Appointment } from "@/types/appointment";
+import { toast } from "react-hot-toast";
+import BillingPromptModal from "@/components/BillModal";
 
 export default function AppointmentsPage() {
-  const [appointments, setAppointments] = useState<Appointment[]>([])
-  const [loading, setLoading] = useState(true)
-  const [showBillingPrompt, setShowBillingPrompt] = useState(false)
-  const [selectedAppointmentId, setSelectedAppointmentId] = useState<string | null>(null)
-
+  const [appointments, setAppointments] = useState<Appointment[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [showBillingPrompt, setShowBillingPrompt] = useState(false);
+  const [selectedAppointmentId, setSelectedAppointmentId] = useState<
+    number | null
+  >(null);
 
   const fetchAppointments = async () => {
     try {
       const res = await fetch(`/api/doctors/appointments`, {
-        cache: 'no-store',
-      })
+        cache: "no-store",
+      });
 
       if (!res.ok) {
-        throw new Error('Failed to fetch')
+        throw new Error("Failed to fetch");
       }
 
-      const data = await res.json()
-      setAppointments(data)
+      const data = await res.json();
+      setAppointments(data);
     } catch (err) {
-      console.error('Failed to load appointments:', err)
+      console.error("Failed to load appointments:", err);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   useEffect(() => {
-    fetchAppointments()
-  }, [])
+    fetchAppointments();
+  }, []);
 
   // ✅ Handle Confirm/Decline
-  const handleUpdateStatus = async (id: string, status: 'Confirmed' | 'Declined') => {
+  const handleUpdateStatus = async (
+    id: number,
+    status: "Confirmed" | "Declined"
+  ) => {
     try {
       const res = await fetch(`/api/appointments/${id}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status }),
-      })
+      });
 
-      if (!res.ok) throw new Error('Update failed')
+      if (!res.ok) throw new Error("Update failed");
 
       // Update the state optimistically
       setAppointments((prev) =>
-        prev.map((appt) =>
-          appt.id === id ? { ...appt, status } : appt
-        )
-      )
+        prev.map((appt) => (appt.id === id ? { ...appt, status } : appt))
+      );
 
-      toast.success(`Appointment ${status.toLowerCase()}`)
-      if (status === 'Confirmed') {
-      setShowBillingPrompt(true)
-      setSelectedAppointmentId(id)
-    }
+      toast.success(`Appointment ${status.toLowerCase()}`);
+      if (status === "Confirmed") {
+        setShowBillingPrompt(true);
+        setSelectedAppointmentId(id);
+      }
     } catch (error) {
-        console.error(error)
-      toast.error('Failed to update appointment')
+      console.error(error);
+      toast.error("Failed to update appointment");
     }
-  }
+  };
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-gray-800 mb-4">All Appointments</h1>
+      <h1 className="text-2xl font-bold text-gray-800 mb-4">
+        All Appointments
+      </h1>
 
       <AppointmentForm onAppointmentCreated={fetchAppointments} />
 
@@ -78,10 +82,10 @@ export default function AppointmentsPage() {
 
       <div className="space-y-4">
         {loading ? (
-           <div className="flex justify-center py-16">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-teal-500" />
-             <span className="sr-only">Loading...</span>
-        </div>
+          <div className="flex justify-center py-16">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-teal-500" />
+            <span className="sr-only">Loading...</span>
+          </div>
         ) : appointments.length === 0 ? (
           <p className="text-sm text-gray-500">No appointments found.</p>
         ) : (
@@ -89,22 +93,21 @@ export default function AppointmentsPage() {
             <AppointmentCard
               key={apt.id}
               data={apt}
-              showActions={apt.status === 'Pending'}
+              showActions={apt.status === "Pending"}
               onUpdateStatus={handleUpdateStatus}
             />
           ))
         )}
       </div>
       {showBillingPrompt && selectedAppointmentId && (
-  <BillingPromptModal
-    appointmentId={selectedAppointmentId}
-    onClose={() => {
-      setShowBillingPrompt(false)
-      setSelectedAppointmentId(null)
-    }}
-  />
-)}
-
+        <BillingPromptModal
+          appointmentId={selectedAppointmentId}
+          onClose={() => {
+            setShowBillingPrompt(false);
+            setSelectedAppointmentId(null);
+          }}
+        />
+      )}
     </div>
-  )
+  );
 }

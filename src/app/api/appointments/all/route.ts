@@ -1,18 +1,18 @@
-import { prisma } from '@/libs/prisma'
-import { NextResponse } from 'next/server'
+import { prisma } from "@/libs/prisma";
+import { NextResponse } from "next/server";
 
 export async function GET() {
   try {
-    const currentDate = new Date()
+    const currentDate = new Date();
 
     const appointments = await prisma.appointment.findMany({
       where: {
         dateTime: {
-          gte: currentDate
-        }
+          gte: currentDate,
+        },
       },
       orderBy: {
-        dateTime: 'asc'
+        dateTime: "asc",
       },
       include: {
         doctor: {
@@ -22,17 +22,18 @@ export async function GET() {
           },
         },
       },
-      take: 4
-    })
+      take: 4,
+    });
 
-    console.log(`[ALL_APPOINTMENTS] Found ${appointments.length} appointments`)
-    return NextResponse.json(appointments, { status: 200 })
+    console.log(`[ALL_APPOINTMENTS] Found ${appointments.length} appointments`);
+    return NextResponse.json(appointments, { status: 200 });
   } catch (error: unknown) {
-    console.error('[ALL_APPT_FETCH_ERROR]', error)
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred'
+    console.error("[ALL_APPT_FETCH_ERROR]", error);
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown error occurred";
     return NextResponse.json(
-      { error: 'Failed to load all appointments', details: errorMessage },
+      { error: "Failed to load all appointments", details: errorMessage },
       { status: 500 }
-    )
+    );
   }
 }
