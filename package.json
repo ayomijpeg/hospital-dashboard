@@ -8,6 +8,7 @@
         "start": "next start",
         "postinstall": "prisma generate",
         "prisma:push": "dotenv -e .env.local -- npx prisma db push",
+        "vercel-build": "prisma generate && next build",
         "lint": "next lint"
     },
     "dependencies": {
