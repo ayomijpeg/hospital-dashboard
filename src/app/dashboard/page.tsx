@@ -26,23 +26,26 @@ export default async function DashboardPage() {
   }
 
   return (
-    <div className="flex">
+    <div className="flex flex-col lg:flex-row">
+      {/* Main Content */}
       <main className="flex-1 p-6 space-y-6">
+        {/* Overview Cards Section */}
         <OverviewCards />
 
         {/* Grid Section: Appointments + Sidebar Analytics */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <UpcomingAppointments />
           <AppointmentOverview />
           <PatientsAndGenderPanel />
         </div>
 
-        <div className="grid md:grid-cols-2 gap-6 mt-6">
+        {/* Billing and Doctors Section */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
           <BillingOverview />
           <Doctors />
         </div>
 
-        {/* Doctor Schedule */}
+        {/* Doctor Schedule Section */}
         <DoctorSchedules />
       </main>
     </div>

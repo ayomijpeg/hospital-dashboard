@@ -2,7 +2,8 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { FaCalendarAlt, FaUsers, FaClock, FaFileAlt, FaCog, FaThLarge,FaFileInvoiceDollar } from 'react-icons/fa'
+import { useState } from 'react'
+import { FaCalendarAlt, FaUsers, FaClock, FaFileAlt, FaCog, FaThLarge, FaFileInvoiceDollar, FaBars, FaTimes } from 'react-icons/fa'
 import Image from 'next/image'
 import LogoutButton from './LogoutButton'
 
@@ -18,19 +19,32 @@ const navItems = [
 
 export default function Sidebar() {
   const pathname = usePathname()
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true) // Track sidebar state
+
+  const toggleSidebar = () => {
+    setIsSidebarOpen(prev => !prev)
+  }
 
   return (
-    <aside className="h-screen w-64 bg-white border-r px-4 py-6 flex flex-col font-sans">
+    <div className={`h-screen ${isSidebarOpen ? 'w-64' : 'w-20'} bg-white border-r px-4 py-6 flex flex-col font-sans transition-all`}>
       {/* Logo and Branding */}
       <div className="flex items-center gap-3 mb-1">
         <Image
-          src="/images/logo.png" 
+          src="/images/logo.png"
           alt="Hospital Dashboard Logo"
           width={50}
           height={50}
         />
-        <h1 className="text-xl font-bold text-gray-800">Doct.</h1>
+        {isSidebarOpen && <h1 className="text-xl font-bold text-gray-800">Doct.</h1>}
       </div>
+
+      {/* Hamburger / Close Icon */}
+      <button 
+        className="md:hidden text-gray-600 p-2" 
+        onClick={toggleSidebar}
+      >
+        {isSidebarOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
+      </button>
 
       {/* Navigation Items */}
       <nav className="space-y-2 text-sm mt-0 flex-1">
@@ -40,14 +54,10 @@ export default function Sidebar() {
             <Link
               key={label}
               href={href}
-              className={`flex items-center gap-3 px-4 py-2 rounded-md transition-colors ${
-                isActive
-                  ? 'bg-[#0D0D2B] text-white'
-                  : 'text-gray-500 hover:bg-gray-100'
-              }`}
+              className={`flex items-center gap-3 px-4 py-2 rounded-md transition-colors ${isActive ? 'bg-[#0D0D2B] text-white' : 'text-gray-500 hover:bg-gray-100'}`}
             >
               <Icon size={18} />
-              <span>{label}</span>
+              {isSidebarOpen && <span>{label}</span>}
             </Link>
           )
         })}
@@ -57,6 +67,6 @@ export default function Sidebar() {
       <div className="mt-auto pt-4 border-t border-gray-200">
         <LogoutButton />
       </div>
-    </aside>
+    </div>
   )
 }

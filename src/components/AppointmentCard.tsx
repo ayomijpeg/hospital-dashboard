@@ -51,7 +51,7 @@ export default function AppointmentCard({
               year: "numeric",
               month: "short",
               day: "numeric",
-            })}{" "}
+            })}{" "}4
             at{" "}
             {new Date(data.date).toLocaleTimeString(undefined, {
               hour: "2-digit",
