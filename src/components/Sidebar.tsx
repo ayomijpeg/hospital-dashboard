@@ -2,18 +2,24 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { useState } from 'react'
+import React, { useState } from 'react' // Import React for types
 import { 
   FaCalendarAlt, FaUsers, FaClock, FaFileAlt, 
   FaCog, FaThLarge, FaFileInvoiceDollar, FaBars, FaTimes 
-} from 'react-icons/fa'
-import Image from 'next/image'
+} from 'react-icons/fa' // This import is necessary
+import Image from 'next/image' // This import is necessary
 // Make sure to import your real LogoutButton
 // import LogoutButton from './LogoutButton'
 
-// Mock LogoutButton for demonstration purposes if you don't have one
-// This mock uses a simple <button>
-const LogoutButton = ({ isSidebarOpen }) => (
+// --- START: TypeScript Fix ---
+// We need to define the props type for the LogoutButton
+type LogoutButtonProps = {
+  isSidebarOpen: boolean;
+}
+
+// Apply the type to the component's props
+const LogoutButton: React.FC<LogoutButtonProps> = ({ isSidebarOpen }) => (
+// --- END: TypeScript Fix ---
   <button className={`flex items-center gap-3 py-2 rounded-md transition-colors text-red-500 hover:bg-red-50 w-full group relative ${isSidebarOpen ? 'px-4' : 'justify-center'}`}>
     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
       <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
@@ -61,12 +67,13 @@ export default function Sidebar() {
       <div className={`flex items-center ${isSidebarOpen ? 'justify-between' : 'justify-center'} px-4 py-6 border-b border-gray-200 h-20`}>
         <div className={`flex items-center gap-3 ${!isSidebarOpen ? 'hidden' : ''}`}>
           <Image
-            src="/images/logo.png" // Using your original image path
+            src="/images/logo.png" // Your original image path
             alt="Hospital Dashboard Logo"
             width={40} 
             height={40}
             className="rounded-md"
-            onError={(e) => e.currentTarget.src = 'https://placehold.co/40x40/0D0D2B/FFFFFF?text=D'}
+            // Optional: fallback for broken image link
+            onError={(e) => (e.currentTarget.src = 'https://placehold.co/40x40/0D0D2B/FFFFFF?text=D')}
           />
           <h1 className="text-xl font-bold text-gray-800">Doct.</h1>
         </div>
@@ -83,7 +90,6 @@ export default function Sidebar() {
       </div>
 
       {/* Navigation Items */}
-      {/* This nav section will scroll if content overflows, while header/footer remain fixed */}
       <nav 
         id="sidebar-nav" 
         className="flex-1 space-y-2 text-sm mt-4 px-4 overflow-y-auto"
@@ -126,4 +132,4 @@ export default function Sidebar() {
     </aside>
   )
 }
-
+```eof
