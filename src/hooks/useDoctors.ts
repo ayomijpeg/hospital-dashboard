@@ -19,7 +19,7 @@ export function useDoctors() {
     try {
       const res = await fetch('/api/doctors')
       const data = await res.json()
-      console.log('Fetched doctors:', data) // 👈 LOG IT
+      //console.log('Fetched doctors:', data) // 👈 LOG IT
       setDoctors(data)
     } catch (err) {
       console.error('Failed to fetch doctors:', err)

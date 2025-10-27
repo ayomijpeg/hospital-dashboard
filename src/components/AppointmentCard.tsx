@@ -85,8 +85,7 @@ export default function AppointmentCard({
           <button
             className="bg-violet-100 text-violet-600 p-2 rounded-full hover:bg-violet-200"
             title="Confirm"
-            onClick={() => handleUpdate("Confirmed")}
-          >
+            onClick={() => handleUpdate("Confirmed")}>
             <FaCheck />
           </button>
         </div>

@@ -11,9 +11,7 @@ export default function AppointmentsPage() {
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [loading, setLoading] = useState(true);
   const [showBillingPrompt, setShowBillingPrompt] = useState(false);
-  const [selectedAppointmentId, setSelectedAppointmentId] = useState<
-    number | null
-  >(null);
+  const [selectedAppointmentId, setSelectedAppointmentId] = useState<number | null>(null);
 
   const fetchAppointments = async () => {
     try {
@@ -39,10 +37,7 @@ export default function AppointmentsPage() {
   }, []);
 
   // ✅ Handle Confirm/Decline
-  const handleUpdateStatus = async (
-    id: number,
-    status: "Confirmed" | "Declined"
-  ) => {
+  const handleUpdateStatus = async (id: number, status: "Confirmed" | "Declined") => {
     try {
       const res = await fetch(`/api/appointments/${id}`, {
         method: "PATCH",
@@ -69,14 +64,12 @@ export default function AppointmentsPage() {
   };
 
   return (
-    <div>
-      <h1 className="text-2xl font-bold text-gray-800 mb-4">
-        All Appointments
-      </h1>
+    <div className="p-4 sm:p-6 lg:p-8">
+      <h1 className="text-2xl font-bold text-gray-800 mb-4">All Appointments</h1>
 
       <AppointmentForm onAppointmentCreated={fetchAppointments} />
 
-      <h2 className="text-2xl font-bold text-gray-600 mb-4">
+      <h2 className="text-xl sm:text-2xl font-semibold text-gray-600 mb-4">
         Manage Your patient appointments.
       </h2>
 
@@ -89,16 +82,20 @@ export default function AppointmentsPage() {
         ) : appointments.length === 0 ? (
           <p className="text-sm text-gray-500">No appointments found.</p>
         ) : (
-          appointments.map((apt: Appointment) => (
-            <AppointmentCard
-              key={apt.id}
-              data={apt}
-              showActions={apt.status === "Pending"}
-              onUpdateStatus={handleUpdateStatus}
-            />
-          ))
+          // Responsive grid layout for appointment cards
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {appointments.map((apt: Appointment) => (
+              <AppointmentCard
+                key={apt.id}
+                data={apt}
+                showActions={apt.status === "Pending"}
+                onUpdateStatus={handleUpdateStatus}
+              />
+            ))}
+          </div>
         )}
       </div>
+
       {showBillingPrompt && selectedAppointmentId && (
         <BillingPromptModal
           appointmentId={selectedAppointmentId}
