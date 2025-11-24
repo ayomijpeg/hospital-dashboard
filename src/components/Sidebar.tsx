@@ -132,4 +132,3 @@ export default function Sidebar() {
     </aside>
   )
 }
-```eof
