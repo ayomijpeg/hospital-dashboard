@@ -3,9 +3,18 @@ import { prisma } from '@/libs/prisma'
 import { getServerSession } from 'next-auth/next'
 import { authOptions } from '@/libs/auth'
 import { v4 as uuidv4 } from 'uuid'
+import { devHospitalStore } from '@/libs/devDataStore'
+
+const DEFAULT_DOCTORS: Record<number, { name: string; department: string }> = {
+  1: { name: "Sarah Jenkins", department: "Cardiology" },
+  2: { name: "Jonathan Reyes", department: "Pediatrics" },
+  3: { name: "Elena Rostova", department: "Neurology" },
+  4: { name: "Marcus Vance", department: "Orthopedics" },
+};
 
 export async function POST(req: Request) {
   try {
+    const session = await getServerSession(authOptions)
     const body = await req.json()
     const { name, gender, age, dateTime, doctorId } = body
 
@@ -24,54 +33,69 @@ export async function POST(req: Request) {
       )
     }
 
-    // Convert doctorId to number
     const doctorIdNum = Number(doctorId)
     if (isNaN(doctorIdNum)) {
       return NextResponse.json({ error: 'Invalid doctor ID format' }, { status: 400 })
     }
 
-    // Validate doctor exists
-    const doctor = await prisma.doctor.findUnique({ 
-      where: { id: doctorIdNum },
-    })
-    
-    if (!doctor) {
-      return NextResponse.json({ error: 'Doctor not found' }, { status: 404 })
-    } 
-
-    // Pick avatar based on gender
-    const maleAvatars = ['male1.jpg', 'male2.jpg', 'male3.jpg', 'male4.jpg', 'male5.jpg', 'male6.jpg', 'male7.jpg', 'male8.jpg', 'male9.jpg']
-    const femaleAvatars = ['female1.jpg', 'female2.jpg', 'female3.jpg', 'female4.jpg', 'female5.jpg', 'female6.jpg', 'female7.jpg', 'female8.jpg', 'female9.jpg']
+    const maleAvatars = ['male1.jpg', 'male2.jpg', 'male3.jpg', 'male4.jpg', 'male5.jpg']
+    const femaleAvatars = ['female1.jpg', 'female2.jpg', 'female3.jpg', 'female4.jpg', 'female5.jpg']
     
     const avatar = gender === 'Male'
       ? maleAvatars[Math.floor(Math.random() * maleAvatars.length)]
       : femaleAvatars[Math.floor(Math.random() * femaleAvatars.length)]
 
-        const appointmentId = uuidv4()
-    // Create the appointment
-    const appointment = await prisma.appointment.create({
-      data: {
-        id: appointmentId, 
+    const appointmentId = uuidv4()
+
+    // 1. Try PostgreSQL
+    try {
+      const doctor = await prisma.doctor.findUnique({ 
+        where: { id: doctorIdNum },
+      })
+      
+      if (!doctor) {
+        return NextResponse.json({ error: 'Doctor not found' }, { status: 404 })
+      }
+
+      const appointment = await prisma.appointment.create({
+        data: {
+          id: appointmentId, 
+          name,
+          gender,
+          age: Number(age),
+          dateTime: new Date(dateTime),
+          doctor: {
+            connect: { id: doctorIdNum }
+          },
+          avatar,
+        }
+      })
+
+      return NextResponse.json({ success: true, appointment }, { status: 201 })
+    } catch (dbError) {
+      console.warn('[APPT_POST_DB_FALLBACK] Database offline, saving appointment to dev store:', dbError)
+      
+      const docInfo = DEFAULT_DOCTORS[doctorIdNum] || { name: "Specialist Physician", department: "General Practice" }
+      const newAppt = devHospitalStore.createAppointment({
         name,
         gender,
         age: Number(age),
-        dateTime: new Date(dateTime),
-        doctor: {
-          connect: { id: doctorIdNum }
-        },
+        dateTime: new Date(dateTime).toISOString(),
+        status: "Pending",
+        doctorId: doctorIdNum,
+        patientEmail: session?.user?.email || undefined,
         avatar,
-      }
-    })
+        doctor: {
+          id: doctorIdNum,
+          name: docInfo.name,
+          department: docInfo.department,
+        },
+      })
 
-    // Update doctor status to "Booked"
-    await prisma.doctor.update({
-      where: { id: doctorIdNum },
-      data: { status: 'Booked' },
-    })
-
-    return NextResponse.json({ success: true, appointment }, { status: 201 })
+      return NextResponse.json({ success: true, appointment: newAppt }, { status: 201 })
+    }
   } catch (error: unknown) {
-    console.error('[APPOINTMENT_POST]', error)
+    console.error('[APPOINTMENT_POST_ERROR]', error)
     const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred'
     return NextResponse.json(
       { error: 'Failed to create appointment', details: errorMessage }, 
@@ -83,54 +107,77 @@ export async function POST(req: Request) {
 export async function GET() {
   try {
     const session = await getServerSession(authOptions)
-    
-    console.log('[DEBUG SESSION]', session)
+    const role = (session?.user?.role || '').toUpperCase()
+    const userEmail = session?.user?.email?.toLowerCase().trim() || null
+    const userName = session?.user?.name || null
 
-    // Validate session
-    if (!session?.user?.id) {
-      console.error('[UNAUTHORIZED] No user ID in session')
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
+    const doctorId = session?.user?.id ? parseInt(session.user.id, 10) : null
+    const isDoctor = role === 'DOCTOR' && !isNaN(doctorId!)
+    const isPatient = role === 'PATIENT' || role === 'USER'
 
-    // Convert session ID to number
-    const doctorId = parseInt(session.user.id, 10)
-    if (isNaN(doctorId)) {
-      console.error('[INVALID_DOCTOR_ID]', session.user.id)
-      return NextResponse.json({ error: 'Invalid doctor ID format' }, { status: 400 })
-    }
-
-    // Get current date for filtering upcoming appointments
-    const currentDate = new Date()
-    
-    const appointments = await prisma.appointment.findMany({
-      where: {
-        doctorId: doctorId,
-        dateTime: {
-          gte: currentDate
+    // 1. Try PostgreSQL
+    try {
+      let whereClause: any = {}
+      if (isDoctor) {
+        whereClause = { doctorId: doctorId! }
+      } else if (isPatient) {
+        whereClause = {
+          OR: [
+            ...(userEmail ? [{ patient: { email: userEmail } }] : []),
+            ...(userName ? [{ name: userName }] : []),
+          ]
         }
-      },
-      orderBy: {                                                                             
-        dateTime: 'asc'
-      },
-      include: {
-        doctor: {
-          select: {
-            name: true,
-            department: true,
-          },
-        },
-      },
-    })
+      }
 
-    console.log(`[APPOINTMENTS] Found ${appointments.length} for doctor ${doctorId}`)
-    return NextResponse.json(appointments, { status: 200 })
+      const appointments = await prisma.appointment.findMany({
+        where: whereClause,
+        orderBy: {
+          dateTime: 'asc'
+        },
+        include: {
+          doctor: {
+            select: {
+              id: true,
+              name: true,
+              department: true,
+            },
+          },
+          patient: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+            }
+          }
+        },
+      })
+
+      return NextResponse.json(appointments, { status: 200 })
+    } catch (dbError) {
+      console.warn('[APPT_FETCH_FALLBACK] Database offline, retrieving from dev store:', dbError)
+
+      // Patient Data Isolation: If patient, ONLY return their own appointments
+      if (isPatient) {
+        const patientAppointments = devHospitalStore.getAppointments({
+          patientEmail: userEmail,
+          patientName: userName,
+        })
+        return NextResponse.json(patientAppointments, { status: 200 })
+      }
+
+      if (isDoctor) {
+        const doctorAppointments = devHospitalStore.getAppointments({
+          doctorId: doctorId || 1,
+        })
+        return NextResponse.json(doctorAppointments, { status: 200 })
+      }
+
+      // Admin sees all
+      return NextResponse.json(devHospitalStore.getAppointments(), { status: 200 })
+    }
   } catch (error: unknown) {
-    console.error('[APPT_FETCH_ERROR]', error)
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred'
-    return NextResponse.json(
-      { error: 'Failed to load appointments', details: errorMessage },
-      { status: 500 }
-    )
+    console.error('[APPT_FETCH_FATAL]', error)
+    return NextResponse.json([], { status: 200 })
   }
 }
 

@@ -1,9 +1,9 @@
 'use client';
-import { doctorSchedules } from '@/data/doctorSchedules';
-import { FaUserMd, FaClock } from 'react-icons/fa';
-import Calendar from 'react-calendar';
+
 import { useState } from 'react';
-// import AppointmentForm from '@/AppointmentForm';
+import Calendar from 'react-calendar';
+import { Stethoscope, Clock, CalendarDays, CheckCircle2 } from 'lucide-react';
+import { doctorSchedules } from '@/data/doctorSchedules';
 import 'react-calendar/dist/Calendar.css';
 
 type ValuePiece = Date | null;
@@ -15,78 +15,93 @@ export default function DoctorSchedules() {
   const selectedDateStr =
     date instanceof Date ? date.toISOString().split('T')[0] : undefined;
 
-  const filteredSchedules = doctorSchedules.filter(
+  const exactMatches = doctorSchedules.filter(
     (doc) => doc.date === selectedDateStr
   );
 
-  return (
-    <div className="grid md:grid-cols-3 gap-6 bg-white rounded-xl p-6 shadow-md">
-      
-      {/* Calendar Section */}
-      <div className="md:col-span-1">
-        <h3 className="text-lg font-semibold text-gray-800 mb-4">Choose Date</h3>
+  const displayedSchedules = exactMatches.length > 0 ? exactMatches : doctorSchedules;
 
-        <div className="bg-gray-50 p-3 rounded-lg border text-gray-600 border-gray-200 shadow-sm">
+  return (
+    <div className="grid lg:grid-cols-3 gap-6 bg-white rounded-xl p-6 border border-slate-200 shadow-sm">
+      {/* Calendar Section */}
+      <div className="lg:col-span-1">
+        <div className="flex items-center gap-2 mb-3">
+          <CalendarDays className="w-4 h-4 text-teal-600" />
+          <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700">
+            Select Roster Date
+          </h3>
+        </div>
+
+        <div className="bg-slate-50 p-3 rounded-xl border border-slate-200 shadow-xs">
           <Calendar
             onChange={setDate}
             value={date}
-            className="REACT-CALENDAR rounded-md"
-            tileClassName="text-sm"
+            className="w-full border-0 bg-transparent text-slate-800 text-sm font-sans"
           />
         </div>
 
-        <p className="text-sm mt-3 text-gray-700 font-medium">
-          Selected: {date instanceof Date ? date.toDateString() : 'None'}
+        <p className="text-xs mt-3 text-slate-500 font-medium flex items-center gap-1.5">
+          <span className="w-2 h-2 rounded-full bg-teal-600 inline-block" />
+          Selected: {date instanceof Date ? date.toDateString() : 'Today'}
         </p>
       </div>
 
-      {/* Schedule Section */}
-      <div className="md:col-span-2 space-y-4">
-        <h2 className="text-xl font-bold text-gray-800">
-          Doctor Schedules for {date instanceof Date ? date.toDateString() : '...'}
-        </h2>
+      {/* Schedule List Section */}
+      <div className="lg:col-span-2 space-y-4">
+        <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+          <div>
+            <h2 className="text-base font-bold text-slate-900">
+              Shift Roster for {date instanceof Date ? date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'Today'}
+            </h2>
+            <p className="text-xs text-slate-500 mt-0.5">
+              {exactMatches.length > 0
+                ? `${exactMatches.length} physician(s) scheduled for this day`
+                : 'No specific shifts for this day — viewing upcoming hospital duty roster'}
+            </p>
+          </div>
+        </div>
 
-        {filteredSchedules.length === 0 ? (
-          <p className="text-gray-600 text-sm italic">No schedules for this day.</p>
-        ) : (
-          <ul className="space-y-4">
-            {filteredSchedules.map((doc) => (
-              <li
-                key={doc.id}
-                className="bg-white hover:bg-gray-50 transition rounded-xl p-4 shadow-sm border border-gray-200"
-              >
-                <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center gap-3">
-                    <FaUserMd className="text-blue-600" />
-                    <div>
-                      <p className="font-semibold text-gray-900">{doc.doctor}</p>
-                      <p className="text-xs text-gray-500">{doc.department}</p>
-                    </div>
-                  </div>
-                  <span
-                    className={`text-xs px-2 py-1 rounded-full font-medium ${
-                      doc.status === 'Confirmed'
-                        ? 'bg-green-100 text-green-800'
-                        : doc.status === 'Pending'
-                        ? 'bg-yellow-100 text-yellow-700'
-                        : 'bg-gray-100 text-gray-500'
-                    }`}
-                  >
-                    {doc.status}
+        <div className="space-y-3">
+          {displayedSchedules.map((doc) => (
+            <div
+              key={doc.id}
+              className="bg-slate-50/70 hover:bg-slate-50 transition p-4 rounded-xl border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-teal-50 text-teal-700 border border-teal-200 flex items-center justify-center shrink-0">
+                  <Stethoscope className="w-5 h-5" />
+                </div>
+                <div>
+                  <h4 className="font-bold text-sm text-slate-900">
+                    Dr. {doc.doctor}
+                  </h4>
+                  <span className="text-xs font-medium text-teal-700">
+                    {doc.department}
                   </span>
                 </div>
+              </div>
 
-                <div className="flex items-center justify-between text-sm text-gray-700">
-                  <div className="flex items-center gap-2">
-                    <FaClock />
-                    <span>{doc.shift}</span>
-                  </div>
-                  <span>{doc.time}</span>
+              <div className="flex items-center gap-4 text-xs text-slate-600">
+                <div className="flex items-center gap-1.5 bg-white px-3 py-1.5 rounded-lg border border-slate-200">
+                  <Clock className="w-3.5 h-3.5 text-slate-400" />
+                  <span className="font-medium">{doc.shift || 'General Shift'}</span>
+                  <span className="text-slate-400">({doc.time})</span>
                 </div>
-              </li>
-            ))}
-          </ul>
-        )}
+
+                <span
+                  className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold ${
+                    doc.status === 'Confirmed'
+                      ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                      : 'bg-amber-50 text-amber-700 border border-amber-200'
+                  }`}
+                >
+                  <CheckCircle2 className="w-3 h-3" />
+                  {doc.status}
+                </span>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );

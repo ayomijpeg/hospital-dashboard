@@ -4,7 +4,7 @@
 import { useEffect } from "react";
 
 type BillingPromptModalProps = {
-  appointmentId: number;
+  appointmentId: string | number;
   onClose: () => void;
 };
 

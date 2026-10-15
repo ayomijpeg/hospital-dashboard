@@ -1,0 +1,150 @@
+[
+  {
+    "id": 1,
+    "name": "Dr. Sarah Jenkins",
+    "email": "s.jenkins@hospital.org",
+    "password": "$2b$10$X0lK0.nF.8aL8SyGMvuncOPx.xAdEpwEz8Hqgx9GiughwpVRMEE3K",
+    "role": "doctor",
+    "department": "Cardiology",
+    "gender": "Female",
+    "avatar": "female-doctor.jpg",
+    "createdAt": "2026-10-14T12:01:46.293Z",
+    "phone": "+1 (555) 234-5678",
+    "address": "742 Evergreen Terrace, Medical District, Springfield",
+    "age": 32,
+    "bloodGroup": "O+",
+    "allergies": "No known drug allergies (NKDA)",
+    "emergencyContact": {
+      "name": "Sarah Parker",
+      "phone": "+1 (555) 987-6543",
+      "relation": "Spouse"
+    },
+    "insurance": {
+      "provider": "Blue Cross Blue Shield Health Network",
+      "policyNumber": "BCBS-84920491",
+      "groupNumber": "GRP-9021"
+    },
+    "licenseNumber": "MED-84920-STATE",
+    "npi": "1948201948",
+    "roomNumber": "Suite 402 - Clinical Wing A",
+    "consultationDuration": 30,
+    "acceptingPatients": false
+  },
+  {
+    "id": 2,
+    "name": "Dr. Jonathan Reyes",
+    "email": "doctor@hospital.org",
+    "password": "$2b$10$gtftW5iEZgJhmrhVoqrF0OKvyKjd/MXF0ZcPDzBRRgstHpRFlvtBK",
+    "role": "doctor",
+    "department": "Pediatrics",
+    "gender": "Male",
+    "avatar": "male-doctor.jpg",
+    "createdAt": "2026-10-14T12:01:46.671Z"
+  },
+  {
+    "id": 3,
+    "name": "Eleanor Vance",
+    "email": "eleanor.vance@gmail.com",
+    "password": "$2b$10$A8BvD436kudRn0c3Xjb.auQq/3Q/eIacaZPORyb8ZXnMB1xqeOHKG",
+    "role": "patient",
+    "gender": "Female",
+    "avatar": "female1.jpg",
+    "age": 54,
+    "condition": "Hypertension Monitoring",
+    "createdAt": "2026-10-14T12:01:46.851Z",
+    "phone": "+1 (555) 890-1234",
+    "address": "742 Evergreen Terrace, Medical District, Springfield",
+    "bloodGroup": "O+",
+    "allergies": "No known drug allergies (NKDA)",
+    "emergencyContact": {
+      "name": "Sarah Parker",
+      "phone": "+1 (555) 987-6543",
+      "relation": "Spouse"
+    },
+    "insurance": {
+      "provider": "Blue Cross Blue Shield Health Network",
+      "policyNumber": "BCBS-84920491",
+      "groupNumber": "GRP-9021"
+    },
+    "department": "Patient Care",
+    "licenseNumber": "MED-84920-STATE",
+    "npi": "1948201948",
+    "roomNumber": "Suite 402 - Clinical Wing A",
+    "consultationDuration": 30,
+    "acceptingPatients": true
+  },
+  {
+    "id": 4,
+    "name": "Marcus Sterling",
+    "email": "patient@hospital.org",
+    "password": "$2b$10$mgAcFV0exRr/qgi/D62xF.RL2./t6DcvZi.LHHNx9MXaYvYgVuWTy",
+    "role": "patient",
+    "gender": "Male",
+    "avatar": "male1.jpg",
+    "age": 8,
+    "condition": "Pediatric Wellness Checkup",
+    "createdAt": "2026-10-14T12:01:47.010Z"
+  },
+  {
+    "id": 5,
+    "name": "Hospital Administrator",
+    "email": "admin@hospital.org",
+    "password": "$2b$10$QVZecMMoG8kDsEcdzwdZN.8qEgm6rL9f0sBvcWtADP5Kmy6rIgvGG",
+    "role": "admin",
+    "department": "Executive Medical Board",
+    "avatar": "doctor1.jpg",
+    "createdAt": "2026-10-14T12:01:47.162Z"
+  },
+  {
+    "name": "Test Patient",
+    "email": "newpatient@test.com",
+    "password": "$2b$10$fIaOtDDuBLmiRNOlSJePMezWcYQZBhGToeTHZftOtm7WCCwwYhjGS",
+    "role": "patient",
+    "department": "Patient Care",
+    "gender": "Female",
+    "avatar": "female1.jpg",
+    "age": 28,
+    "condition": "General Health Consultation",
+    "id": 6,
+    "createdAt": "2026-10-14T12:01:47.202Z"
+  },
+  {
+    "name": "Dr. Alexander Cross",
+    "email": "alexander.cross@hospital.org",
+    "password": "$2b$10$klq0j/z2xhV3H9.piwOHmuLmbGLvRnerM4CklnaMMMlPtxIjnoXRG",
+    "role": "doctor",
+    "department": "Neurology",
+    "gender": "Male",
+    "avatar": "male-doctor.jpg",
+    "age": 30,
+    "condition": "General Health Consultation",
+    "id": 7,
+    "createdAt": "2026-10-14T12:02:04.297Z"
+  },
+  {
+    "name": "Sarah Connor",
+    "email": "sarah.connor@test.com",
+    "password": "$2b$10$om4ZPL9s59Kgrh0B6jTCV.Qe7XEhOnrUO6YCVDd0KoBdAGhAvzmtG",
+    "role": "patient",
+    "department": "Patient Care",
+    "gender": "Female",
+    "avatar": "female1.jpg",
+    "age": 34,
+    "condition": "General Health Consultation",
+    "id": 8,
+    "createdAt": "2026-10-14T12:07:16.926Z"
+  },
+  {
+    "name": "John",
+    "email": "john@gmail.com",
+    "password": "$2b$10$vl7NHeYQQ9znzcWzpzGRHOO9eramHR3sl6ghiNmcA9PV/jVlAI8S.",
+    "role": "patient",
+    "department": "Patient Care",
+    "gender": "Male",
+    "avatar": "male1.jpg",
+    "age": 28,
+    "condition": "General Health Consultation",
+    "id": 9,
+    "createdAt": "2026-10-14T12:10:23.330Z"
+  }
+]

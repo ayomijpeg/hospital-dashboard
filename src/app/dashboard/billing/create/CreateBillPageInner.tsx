@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { FaCheckCircle } from "react-icons/fa";
+import RoleGuard from "@/components/RoleGuard";
 
 export default function CreateBillPageInner() {
   const searchParams = useSearchParams();
@@ -20,7 +21,10 @@ export default function CreateBillPageInner() {
 
   useEffect(() => {
     const fetchAppointment = async () => {
-      if (!appointmentId) return;
+      if (!appointmentId) {
+        setLoading(false);
+        return;
+      }
 
       try {
         const res = await fetch(`/api/appointments/${appointmentId}`);
@@ -80,8 +84,29 @@ export default function CreateBillPageInner() {
     );
   }
 
+  if (!appointmentId) {
+    return (
+      <div className="max-w-xl mx-auto p-8 bg-white rounded-xl shadow-md mt-10 text-center border border-gray-100">
+        <h2 className="text-xl font-semibold mb-2 text-gray-800">No Appointment Selected</h2>
+        <p className="text-sm text-gray-500 mb-6">
+          Hospital invoices are generated from confirmed patient appointments. Please select an appointment to proceed.
+        </p>
+        <button
+          onClick={() => router.push("/dashboard/appointments")}
+          className="px-5 py-2.5 bg-teal-600 text-white text-sm font-medium rounded-lg hover:bg-teal-700 transition"
+        >
+          Go to Appointments
+        </button>
+      </div>
+    );
+  }
+
   return (
-    <div className="max-w-xl mx-auto p-6 bg-white rounded-xl shadow-md mt-10 relative">
+    <RoleGuard
+      allowedRoles={["DOCTOR", "ADMIN"]}
+      fallbackMessage="Invoice generation and billing fee schedules are restricted to Attending Clinicians and Hospital Financial Staff."
+    >
+      <div className="max-w-xl mx-auto p-6 bg-white rounded-xl shadow-md mt-10 relative">
       {success && (
         <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-50 w-full max-w-md">
           <div className="bg-green-50 text-green-800 p-4 rounded-lg shadow-lg flex items-center justify-between">
@@ -182,5 +207,6 @@ export default function CreateBillPageInner() {
         </div>
       </form>
     </div>
+    </RoleGuard>
   );
 }

@@ -1,0 +1,158 @@
+{
+  "patients": [
+    {
+      "id": 1,
+      "name": "Eleanor Vance",
+      "email": "eleanor.vance@gmail.com",
+      "age": 54,
+      "condition": "Hypertension Monitoring",
+      "avatar": "female1.jpg",
+      "gender": "Female",
+      "createdAt": "2026-09-29T12:25:13.168Z",
+      "_count": {
+        "appointments": 1,
+        "bills": 1
+      }
+    },
+    {
+      "id": 2,
+      "name": "Marcus Sterling",
+      "email": "marcus.sterling@gmail.com",
+      "age": 8,
+      "condition": "Pediatric Wellness Checkup",
+      "avatar": "male2.jpg",
+      "gender": "Male",
+      "createdAt": "2026-10-04T12:25:13.168Z",
+      "_count": {
+        "appointments": 1,
+        "bills": 1
+      }
+    },
+    {
+      "id": 3,
+      "name": "Amina Al-Mansoor",
+      "email": "amina.almansoor@gmail.com",
+      "age": 42,
+      "condition": "Neurological Follow-up",
+      "avatar": "female3.jpg",
+      "gender": "Female",
+      "createdAt": "2026-10-09T12:25:13.168Z",
+      "_count": {
+        "appointments": 1,
+        "bills": 1
+      }
+    }
+  ],
+  "appointments": [
+    {
+      "name": "John",
+      "gender": "Female",
+      "age": 32,
+      "dateTime": "2026-10-30T09:30:00.000Z",
+      "status": "Pending",
+      "doctorId": 1,
+      "patientEmail": "john@gmail.com",
+      "avatar": "female3.jpg",
+      "doctor": {
+        "id": 1,
+        "name": "Sarah Jenkins",
+        "department": "Cardiology"
+      },
+      "id": "apt-444386",
+      "createdAt": "2026-10-14T12:37:24.386Z"
+    },
+    {
+      "id": "apt-101",
+      "name": "Eleanor Vance",
+      "patientEmail": "eleanor.vance@gmail.com",
+      "gender": "Female",
+      "age": 54,
+      "dateTime": "2026-10-14T14:25:13.168Z",
+      "status": "Confirmed",
+      "doctorId": 1,
+      "avatar": "female1.jpg",
+      "doctor": {
+        "id": 1,
+        "name": "Sarah Jenkins",
+        "department": "Cardiology"
+      },
+      "createdAt": "2026-10-14T12:25:13.168Z"
+    },
+    {
+      "id": "apt-102",
+      "name": "Marcus Sterling",
+      "patientEmail": "marcus.sterling@gmail.com",
+      "gender": "Male",
+      "age": 8,
+      "dateTime": "2026-10-14T17:25:13.168Z",
+      "status": "Confirmed",
+      "doctorId": 2,
+      "avatar": "male2.jpg",
+      "doctor": {
+        "id": 2,
+        "name": "Jonathan Reyes",
+        "department": "Pediatrics"
+      },
+      "createdAt": "2026-10-14T12:25:13.168Z"
+    },
+    {
+      "id": "apt-103",
+      "name": "Amina Al-Mansoor",
+      "patientEmail": "amina.almansoor@gmail.com",
+      "gender": "Female",
+      "age": 42,
+      "dateTime": "2026-10-15T12:25:13.168Z",
+      "status": "Pending",
+      "doctorId": 3,
+      "avatar": "female3.jpg",
+      "doctor": {
+        "id": 3,
+        "name": "Elena Rostova",
+        "department": "Neurology"
+      },
+      "createdAt": "2026-10-14T12:25:13.168Z"
+    }
+  ],
+  "bills": [
+    {
+      "id": "bill-001",
+      "appointmentId": "apt-101",
+      "patientName": "Eleanor Vance",
+      "patientEmail": "eleanor.vance@gmail.com",
+      "patient": {
+        "id": 1,
+        "name": "Eleanor Vance"
+      },
+      "doctor": {
+        "id": 1,
+        "name": "Dr. Sarah Jenkins"
+      },
+      "doctorId": 1,
+      "services": "Cardiology Consultation & Resting ECG",
+      "amount": 220,
+      "status": "Paid",
+      "issuedAt": "2026-10-12T12:25:13.168Z",
+      "appointmentName": "Comprehensive Cardiac Review"
+    },
+    {
+      "id": "bill-002",
+      "appointmentId": "apt-102",
+      "patientName": "Marcus Sterling",
+      "patientEmail": "marcus.sterling@gmail.com",
+      "patient": {
+        "id": 2,
+        "name": "Marcus Sterling"
+      },
+      "doctor": {
+        "id": 2,
+        "name": "Dr. Jonathan Reyes"
+      },
+      "doctorId": 2,
+      "services": "Pediatric Wellness Exam & MMR Booster",
+      "amount": 175.5,
+      "status": "Unpaid",
+      "issuedAt": "2026-10-13T12:25:13.168Z",
+      "appointmentName": "Annual Pediatric Checkup"
+    }
+  ]
+}

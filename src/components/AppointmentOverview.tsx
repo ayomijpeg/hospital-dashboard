@@ -1,10 +1,11 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import Link from 'next/link'
 import AppointmentCard from './AppointmentCard'
 import { Appointment } from '@/types/appointment'
 
-export default function UpcomingAppointments() {
+export default function AppointmentOverview() {
   const [appointments, setAppointments] = useState<Appointment[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -113,9 +114,9 @@ export default function UpcomingAppointments() {
               <path d="M16 16h5v5" />
             </svg>
           </button>
-          <a href="/appointments" className="text-sm text-blue-600 hover:underline">
+          <Link href="/dashboard/appointments" className="text-sm text-teal-600 hover:underline">
             View All
-          </a>
+          </Link>
         </div>
       </div>
 

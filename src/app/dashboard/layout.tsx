@@ -1,22 +1,23 @@
-// src/app/dashboard/layout.tsx
 'use client'
 
+import { Suspense } from 'react'
 import Sidebar from '@/components/Sidebar'
 import DashboardNavbar from '@/components/DashboardNavbar'
-import { Providers } from '../provider'
+import AccessAlert from '@/components/AccessAlert'
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (
-    <Providers>
-    <div className="flex min-h-screen bg-[#eaedf0]">
-      <div className="w-[250px] border-r bg-white">
-        <Sidebar />
-      </div>
-      <main className="flex-1 p-6 space-y-6">
+    <div className="flex min-h-screen bg-[#f4f6f9]">
+      <Sidebar />
+      <div className="flex-1 flex flex-col min-w-0">
         <DashboardNavbar />
-        {children}
-      </main>
+        <main className="flex-1 p-4 md:p-6 space-y-6">
+          <Suspense fallback={null}>
+            <AccessAlert />
+          </Suspense>
+          {children}
+        </main>
+      </div>
     </div>
-    </Providers>
   )
 }
